@@ -14,6 +14,7 @@ repositories {
   mavenCentral()
 }
 
+apply plugin: 'idea'
 apply plugin: 'application'
 apply plugin: 'groovy'
 apply plugin: 'com.github.johnrengelman.shadow'
@@ -22,7 +23,7 @@ targetCompatibility = 1.8
 
 dependencies {
   compile "org.codehaus.groovy:groovy-all:$groovyVersion"
-  compile "io.vertx:vertx-core:$vertxVersion"
+  compile "io.vertx:vertx-web:$vertxVersion"
 }
 
 mainClassName = 'AppMain'
