@@ -1,0 +1,3 @@
+{
+  "guice_binder": "com.damelines.notes.modules.Binder"
+}

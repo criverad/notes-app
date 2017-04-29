@@ -19,20 +19,30 @@ apply plugin: 'application'
 apply plugin: 'groovy'
 apply plugin: 'com.github.johnrengelman.shadow'
 
+sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
   compile "org.codehaus.groovy:groovy-all:$groovyVersion"
   compile "io.vertx:vertx-web:$vertxVersion"
+  compile "com.google.inject:guice:$guiceVersion"
 }
 
-mainClassName = 'AppMain'
+mainClassName = 'io.vertx.core.Launcher'
+def mainVerticle = 'com.damelines.notes.NotesVerticle'
 
 shadowJar {
-  classifier = 'fat'
+  classifier = ''
+  manifest {
+    attributes 'Main-Verticle': mainVerticle
+  }
   mergeServiceFiles {
     include 'META-INF/services/io.vertx.core.spi.VerticleFactory'
   }
+}
+
+run {
+  args = ['run', mainVerticle]
 }
 
 task wrapper(type: Wrapper) {
