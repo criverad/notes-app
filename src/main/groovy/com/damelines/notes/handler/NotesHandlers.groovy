@@ -1,40 +1,47 @@
 package com.damelines.notes.handler
 
+import com.damelines.notes.repo.NotesRepo
+import io.vertx.core.json.Json
 import io.vertx.ext.web.RoutingContext
 
+import javax.inject.Inject
+
 class NotesHandlers {
+
+  @Inject
+  NotesRepo notesRepo
 
   void getNoteList(RoutingContext routingContext) {
     def response = routingContext.response()
     response.putHeader('Content-Type', 'text/plain')
-    response.end('You\'ve called getNoteList()')
-  }
-
-  void createNote(RoutingContext routingContext) {
-    def jsonMap = routingContext.bodyAsString
-    def response = routingContext.response()
-    response.putHeader('Content-Type', 'text/plain')
-    response.end("You\'ve called createNote($jsonMap)")
-  }
-
-  void updateNote(RoutingContext routingContext) {
-    def jsonMap = routingContext.bodyAsJson
-    def response = routingContext.response()
-    response.putHeader('Content-Type', 'text/plain')
-    response.end("You\'ve called updateNote($jsonMap)")
-  }
-
-  void deleteNote(RoutingContext routingContext) {
-    def noteId = routingContext.request().getParam('noteId')
-    def response = routingContext.response()
-    response.putHeader('Content-Type', 'text/plain')
-    response.end("You\'ve called deleteNote($noteId)")
+    response.setStatusCode(200).end(Json.encodePrettily(notesRepo.notes))
   }
 
   void getNote(RoutingContext routingContext) {
     def noteId = routingContext.request().getParam('noteId')
     def response = routingContext.response()
     response.putHeader('Content-Type', 'text/plain')
-    response.end("You\'ve called getNote($noteId)")
+    response.setStatusCode(200).end(Json.encodePrettily(notesRepo.getNote(noteId)))
+  }
+
+  void createNote(RoutingContext routingContext) {
+    def noteMap = Json.decodeValue(routingContext.bodyAsString, Map)
+    def response = routingContext.response()
+    response.putHeader('Content-Type', 'text/plain')
+    response.setStatusCode(201).end(Json.encodePrettily(notesRepo.createNote(noteMap)))
+  }
+
+  void updateNote(RoutingContext routingContext) {
+    def noteMap = Json.decodeValue(routingContext.bodyAsString, Map)
+    def response = routingContext.response()
+    response.putHeader('Content-Type', 'text/plain')
+    response.setStatusCode(200).end(Json.encodePrettily(notesRepo.updateNote(noteMap)))
+  }
+
+  void deleteNote(RoutingContext routingContext) {
+    def noteId = routingContext.request().getParam('noteId')
+    def response = routingContext.response()
+    notesRepo.deleteNote(noteId)
+    response.setStatusCode(200).end()
   }
 }
